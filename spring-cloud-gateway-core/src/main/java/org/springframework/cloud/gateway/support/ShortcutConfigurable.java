@@ -107,6 +107,7 @@ public interface ShortcutConfigurable {
 	}
 
 	/**
+	 * 字段顺序，predicates配置转换config值时，根据该list顺序设置
 	 * Returns hints about the number of args and the order for shortcut parsing.
 	 * @return
 	 */

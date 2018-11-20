@@ -52,6 +52,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 
 /**
+ * 将 RouteDefinition 转换成 Route
  * {@link RouteLocator} that loads routes from a {@link RouteDefinitionLocator}
  * @author Spencer Gibb
  */
@@ -59,8 +60,8 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private final RouteDefinitionLocator routeDefinitionLocator;
-	private final Map<String, RoutePredicateFactory> predicates = new LinkedHashMap<>();
-	private final Map<String, GatewayFilterFactory> gatewayFilterFactories = new HashMap<>();
+	private final Map<String, RoutePredicateFactory> predicates = new LinkedHashMap<>(); // 工厂name -> 工厂类
+	private final Map<String, GatewayFilterFactory> gatewayFilterFactories = new HashMap<>(); // 工厂name -> 工厂类
 	private final GatewayProperties gatewayProperties;
 	private final SpelExpressionParser parser = new SpelExpressionParser();
 	private BeanFactory beanFactory;
@@ -71,8 +72,8 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 									   List<GatewayFilterFactory> gatewayFilterFactories,
 									   GatewayProperties gatewayProperties) {
 		this.routeDefinitionLocator = routeDefinitionLocator;
-		initFactories(predicates);
-		gatewayFilterFactories.forEach(factory -> this.gatewayFilterFactories.put(factory.name(), factory));
+		initFactories(predicates); // 初始化 predicates 缓存map
+		gatewayFilterFactories.forEach(factory -> this.gatewayFilterFactories.put(factory.name(), factory)); // 初始化 gatewayFilterFactories 缓存map
 		this.gatewayProperties = gatewayProperties;
 	}
 
@@ -124,10 +125,10 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 	}
 
 	private Route convertToRoute(RouteDefinition routeDefinition) {
-		AsyncPredicate<ServerWebExchange> predicate = combinePredicates(routeDefinition);
-		List<GatewayFilter> gatewayFilters = getFilters(routeDefinition);
+		AsyncPredicate<ServerWebExchange> predicate = combinePredicates(routeDefinition); // 将配置的 PredicateDefinition 转换成 AsyncPredicate
+		List<GatewayFilter> gatewayFilters = getFilters(routeDefinition); // 将 FilterDefinition 转换成 GatewayFilter
 
-		return Route.async(routeDefinition)
+		return Route.async(routeDefinition) // 生成 Route 对象
 				.asyncPredicate(predicate)
 				.replaceFilters(gatewayFilters)
 				.build();
@@ -146,12 +147,12 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 						logger.debug("RouteDefinition " + id + " applying filter " + args + " to " + definition.getName());
 					}
 
-                    Map<String, Object> properties = factory.shortcutType().normalize(args, factory, this.parser, this.beanFactory);
+                    Map<String, Object> properties = factory.shortcutType().normalize(args, factory, this.parser, this.beanFactory); // 将参数 key 转化为 factory 中 config 的属性名
 
-                    Object configuration = factory.newConfig();
+                    Object configuration = factory.newConfig(); // 创建该 factory 的 config 类实例
 
                     ConfigurationUtils.bind(configuration, properties,
-                            factory.shortcutFieldPrefix(), definition.getName(), validator);
+                            factory.shortcutFieldPrefix(), definition.getName(), validator); // 将参数绑定到 config 对象上
 
                     GatewayFilter gatewayFilter = factory.apply(configuration);
                     if (this.publisher != null) {
@@ -179,26 +180,26 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 		List<GatewayFilter> filters = new ArrayList<>();
 
 		//TODO: support option to apply defaults after route specific filters?
-		if (!this.gatewayProperties.getDefaultFilters().isEmpty()) {
+		if (!this.gatewayProperties.getDefaultFilters().isEmpty()) { // 将 GatewayProperties 中默认的 FilterDefinition，转换成 GatewayFilter。
 			filters.addAll(loadGatewayFilters("defaultFilters",
 					this.gatewayProperties.getDefaultFilters()));
 		}
 
-		if (!routeDefinition.getFilters().isEmpty()) {
+		if (!routeDefinition.getFilters().isEmpty()) { // 将 RouteDefinition 中定义的 FilterDefinition 转换成 GatewayFilter。
 			filters.addAll(loadGatewayFilters(routeDefinition.getId(), routeDefinition.getFilters()));
 		}
 
-		AnnotationAwareOrderComparator.sort(filters);
+		AnnotationAwareOrderComparator.sort(filters); // 排序
 		return filters;
 	}
 
 	private AsyncPredicate<ServerWebExchange> combinePredicates(RouteDefinition routeDefinition) {
 		List<PredicateDefinition> predicates = routeDefinition.getPredicates();
-		AsyncPredicate<ServerWebExchange> predicate = lookup(routeDefinition, predicates.get(0));
+		AsyncPredicate<ServerWebExchange> predicate = lookup(routeDefinition, predicates.get(0));  // 调用 lookup 方法，将列表中第一个 PredicateDefinition 转换成 AsyncPredicate。
 
-		for (PredicateDefinition andPredicate : predicates.subList(1, predicates.size())) {
+		for (PredicateDefinition andPredicate : predicates.subList(1, predicates.size())) { // 遍历剩下的 PredicateDefinition 转换成 AsyncPredicate
 			AsyncPredicate<ServerWebExchange> found = lookup(routeDefinition, andPredicate);
-			predicate = predicate.and(found);
+			predicate = predicate.and(found); // 应用and操作，将所有的 AsyncPredicate 组合成一个 AsyncPredicate 对象。
 		}
 
 		return predicate;
@@ -216,10 +217,10 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 					+ args + " to " + predicate.getName());
 		}
 
-        Map<String, Object> properties = factory.shortcutType().normalize(args, factory, this.parser, this.beanFactory);
-        Object config = factory.newConfig();
+        Map<String, Object> properties = factory.shortcutType().normalize(args, factory, this.parser, this.beanFactory); // 将参数 key 转化为 factory 中 config 的属性名
+        Object config = factory.newConfig(); // 创建该 factory 的 config 类实例
         ConfigurationUtils.bind(config, properties,
-                factory.shortcutFieldPrefix(), predicate.getName(), validator);
+                factory.shortcutFieldPrefix(), predicate.getName(), validator); // 将参数绑定到 config 对象上
         if (this.publisher != null) {
             this.publisher.publishEvent(new PredicateArgsEvent(this, route.getId(), properties));
         }

@@ -31,6 +31,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 
 /**
+ * 外部化配置资源属性
  * @author Spencer Gibb
  */
 @ConfigurationProperties("spring.cloud.gateway")
@@ -46,6 +47,7 @@ public class GatewayProperties {
 
 	/**
 	 * List of filter definitions that are applied to every route.
+	 * 默认的 Filter 列表，默认的 Filter 会应用到每一个 Route 上
 	 */
 	private List<FilterDefinition> defaultFilters = new ArrayList<>();
 

@@ -24,6 +24,7 @@ import com.netflix.hystrix.HystrixObservableCommand;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.springframework.cloud.gateway.filter.ElapsedFilter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -137,6 +138,7 @@ import static org.springframework.cloud.gateway.config.HttpClientProperties.Pool
 import static org.springframework.cloud.gateway.config.HttpClientProperties.Pool.PoolType.FIXED;
 
 /**
+ * 通过 spring.cloud.gateway.enabled 配置网关的开启与关闭。 matchIfMissing = true ,网关默认开启
  * @author Spencer Gibb
  */
 @Configuration
@@ -148,6 +150,9 @@ import static org.springframework.cloud.gateway.config.HttpClientProperties.Pool
 @ConditionalOnClass(DispatcherHandler.class)
 public class GatewayAutoConfiguration {
 
+	/**
+	 * 初始化 Netty
+	 */
 	@Configuration
 	@ConditionalOnClass(HttpClient.class)
 	protected static class NettyConfiguration {
@@ -283,12 +288,19 @@ public class GatewayAutoConfiguration {
 		return new InMemoryRouteDefinitionRepository();
 	}
 
+	/**
+	 * 初始化 RouteDefinitionLocator，加载 RouteDefinition
+	 * 接收 List<RouteDefinitionLocator>，遍历 Locator 加载所有来源的 RouteDefinition
+	 * 默认加载类为 PropertiesRouteDefinitionLocator 从资源文件中读取，InMemoryRouteDefinitionRepository 从内存缓存中读取
+	 * 可根据需要扩展 RouteDefinitionLocator，比如实现 DbRouteDefinition 可从数据库读取
+	 */
 	@Bean
 	@Primary
 	public RouteDefinitionLocator routeDefinitionLocator(List<RouteDefinitionLocator> routeDefinitionLocators) {
 		return new CompositeRouteDefinitionLocator(Flux.fromIterable(routeDefinitionLocators));
 	}
 
+	// 初始化 Route 加载类： RouteDefinitionRouteLocator，将 RouteDefinition 转换成 Route
 	@Bean
 	public RouteLocator routeDefinitionRouteLocator(GatewayProperties properties,
 												   List<GatewayFilterFactory> GatewayFilters,
@@ -618,5 +630,9 @@ public class GatewayAutoConfiguration {
 		}
 	}
 
+	@Bean
+	public ElapsedFilter elapsedFilter() {
+		return new ElapsedFilter();
+	}
 }
 

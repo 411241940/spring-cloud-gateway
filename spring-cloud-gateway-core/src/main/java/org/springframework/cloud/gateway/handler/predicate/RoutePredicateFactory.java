@@ -54,6 +54,7 @@ public interface RoutePredicateFactory<C> extends ShortcutConfigurable, Configur
 		throw new UnsupportedOperationException("getConfigClass() not implemented");
 	}
 
+	// 创建一个泛型的 config 实例，由具体的实现类来完成
 	@Override
 	default C newConfig() {
 		throw new UnsupportedOperationException("newConfig() not implemented");
@@ -61,12 +62,15 @@ public interface RoutePredicateFactory<C> extends ShortcutConfigurable, Configur
 
 	default void beforeApply(C config) {}
 
+	// 生产 Predicate
 	Predicate<ServerWebExchange> apply(C config);
 
+	// 生产 非阻塞 AsyncPredicate
 	default AsyncPredicate<ServerWebExchange> applyAsync(C config) {
 		return toAsyncPredicate(apply(config));
 	}
 
+	// 工厂的 name 为：类名去除掉后面的 RoutePredicateFactory (RoutePredicateFactory前面的单词)
 	default String name() {
 		return NameUtils.normalizeRoutePredicateName(getClass());
 	}

@@ -45,11 +45,13 @@ public interface GatewayFilterFactory<C> extends ShortcutConfigurable, Configura
 		throw new UnsupportedOperationException("getConfigClass() not implemented");
 	}
 
+	// 创建一个泛型的 config 实例，由具体的实现类来完成
 	@Override
 	default C newConfig() {
 		throw new UnsupportedOperationException("newConfig() not implemented");
 	}
 
+	// 生产 GatewayFilter
 	GatewayFilter apply(C config);
 
 	default String name() {

@@ -52,6 +52,7 @@ public class PathRoutePredicateFactory extends AbstractRoutePredicateFactory<Pat
 		this.pathPatternParser = pathPatternParser;
 	}
 
+	// 字段顺序，predicates配置转换config值时，根据该list顺序设置
 	@Override
 	public List<String> shortcutFieldOrder() {
 		return Arrays.asList(PATTERN_KEY, MATCH_OPTIONAL_TRAILING_SEPARATOR_KEY);

@@ -20,6 +20,7 @@ package org.springframework.cloud.gateway.sample;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.cloud.gateway.filter.ElapsedFilter;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -108,9 +109,12 @@ public class GatewaySampleApplication {
 				)
 				.route(r -> r.path("/image/webp")
 					.filters(f ->
-							f.prefixPath("/httpbin")
-									.addResponseHeader("X-AnotherHeader", "baz"))
+							f.filter(new ElapsedFilter()).addResponseHeader("X-AnotherHeader", "baz"))
 					.uri(uri)
+				)
+				.route(r -> r.path("/285186675/answer/445517499")
+						.filters(f -> f.prefixPath("/question"))
+					.uri("https://www.zhihu.com")
 				)
 				.route(r -> r.order(-1)
 					.host("**.throttle.org").and().path("/get")

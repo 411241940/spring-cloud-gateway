@@ -37,19 +37,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.toAsyncPredicate;
 
 /**
+ * 路由信息
  * @author Spencer Gibb
  */
 public class Route implements Ordered {
 
 	private final String id;
 
-	private final URI uri;
+	private final URI uri; // 目的URI
 
-	private final int order;
+	private final int order; // 数值越小排序越靠前
 
-	private final AsyncPredicate<ServerWebExchange> predicate;
+	private final AsyncPredicate<ServerWebExchange> predicate; // 前置条件
 
-	private final List<GatewayFilter> gatewayFilters;
+	private final List<GatewayFilter> gatewayFilters; // 过滤器链
 
 	public static Builder builder() {
 		return new Builder();
