@@ -28,6 +28,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
+ * 请求指定 Cookie 正则匹配指定值
  * @author Spencer Gibb
  */
 public class CookieRoutePredicateFactory extends AbstractRoutePredicateFactory<CookieRoutePredicateFactory.Config> {
@@ -52,6 +53,7 @@ public class CookieRoutePredicateFactory extends AbstractRoutePredicateFactory<C
 				return false;
 			}
 			for (HttpCookie cookie : cookies) {
+				// 正则匹配
 				if (cookie.getValue().matches(config.regexp)) {
 					return true;
 				}

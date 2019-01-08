@@ -36,6 +36,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.U
 import static org.springframework.http.server.PathContainer.parsePath;
 
 /**
+ * 请求 Path 匹配指定值
  * @author Spencer Gibb
  */
 public class PathRoutePredicateFactory extends AbstractRoutePredicateFactory<PathRoutePredicateFactory.Config> {

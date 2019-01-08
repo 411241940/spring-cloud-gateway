@@ -54,6 +54,8 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.i
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.setAlreadyRouted;
 
 /**
+ * 使用基于 Netty 实现的 HttpClient 请求后端 Http 服务
+ * 前缀( Scheme ) : http:// 或 https://
  * @author Spencer Gibb
  * @author Biju Kunjummen
  */

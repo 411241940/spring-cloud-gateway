@@ -29,6 +29,7 @@ import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 /**
+ * 从缓存中加载 Route
  * @author Spencer Gibb
  */
 public class CachingRouteLocator implements RouteLocator, ApplicationListener<RefreshRoutesEvent> {
@@ -57,6 +58,11 @@ public class CachingRouteLocator implements RouteLocator, ApplicationListener<Re
 		return this.routes;
 	}
 
+	/**
+	 * 监听 org.springframework.context.ApplicationEvent.RefreshRoutesEvent 事件，刷新缓存
+	 * 提供 /refresh 方法触发刷新， {@link org.springframework.cloud.gateway.actuate.GatewayControllerEndpoint}
+	 * @param event
+	 */
 	@Override
 	public void onApplicationEvent(RefreshRoutesEvent event) {
 		refresh();

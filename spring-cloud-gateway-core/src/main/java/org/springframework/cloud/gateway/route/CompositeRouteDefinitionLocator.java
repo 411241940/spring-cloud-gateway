@@ -20,7 +20,7 @@ package org.springframework.cloud.gateway.route;
 import reactor.core.publisher.Flux;
 
 /**
- * 组合多种 RouteDefinitionLocator 的实现，作为获取 RouteDefinition 的统一入口
+ * 组合多种 RouteDefinitionLocator 的实现，遍历获取 RouteDefinition
  * @author Spencer Gibb
  */
 public class CompositeRouteDefinitionLocator implements RouteDefinitionLocator {

@@ -37,6 +37,7 @@ import java.util.function.Predicate;
 import static org.springframework.cloud.gateway.support.ShortcutConfigurable.ShortcutType.GATHER_LIST;
 
 /**
+ * 请求来源 IP 在指定范围内
  * @author Spencer Gibb
  */
 public class RemoteAddrRoutePredicateFactory extends AbstractRoutePredicateFactory<RemoteAddrRoutePredicateFactory.Config> {

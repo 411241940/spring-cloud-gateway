@@ -282,6 +282,11 @@ public class GatewayAutoConfiguration {
 		return new PropertiesRouteDefinitionLocator(properties);
 	}
 
+	/**
+	 * 初始化 存储器加载器
+	 * RouteDefinitionRepository 不存在时默认创建 InMemoryRouteDefinitionRepository ，便于自己实现初始化
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean(RouteDefinitionRepository.class)
 	public InMemoryRouteDefinitionRepository inMemoryRouteDefinitionRepository() {

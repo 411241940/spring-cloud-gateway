@@ -27,6 +27,7 @@ import org.springframework.web.server.ServerWebExchange;
 import static org.springframework.cloud.gateway.handler.predicate.BetweenRoutePredicateFactory.getZonedDateTime;
 
 /**
+ * 匹配指定日期时间之前产生的请求
  * @author Spencer Gibb
  */
 public class BeforeRoutePredicateFactory extends AbstractRoutePredicateFactory<BeforeRoutePredicateFactory.Config> {

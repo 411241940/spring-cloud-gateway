@@ -25,6 +25,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
+ * 请求 Method 匹配指定值
  * @author Spencer Gibb
  */
 public class MethodRoutePredicateFactory extends AbstractRoutePredicateFactory<MethodRoutePredicateFactory.Config> {

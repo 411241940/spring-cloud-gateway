@@ -52,7 +52,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 
 /**
- * 将 RouteDefinition 转换成 Route
+ * 从 RouteDefinition 加载 Route
  * {@link RouteLocator} that loads routes from a {@link RouteDefinitionLocator}
  * @author Spencer Gibb
  */
@@ -125,7 +125,7 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 	}
 
 	private Route convertToRoute(RouteDefinition routeDefinition) {
-		AsyncPredicate<ServerWebExchange> predicate = combinePredicates(routeDefinition); // 将配置的 PredicateDefinition 转换成 AsyncPredicate
+		AsyncPredicate<ServerWebExchange> predicate = combinePredicates(routeDefinition); // 将配置的 PredicateDefinition 转换合并成 AsyncPredicate
 		List<GatewayFilter> gatewayFilters = getFilters(routeDefinition); // 将 FilterDefinition 转换成 GatewayFilter
 
 		return Route.async(routeDefinition) // 生成 Route 对象

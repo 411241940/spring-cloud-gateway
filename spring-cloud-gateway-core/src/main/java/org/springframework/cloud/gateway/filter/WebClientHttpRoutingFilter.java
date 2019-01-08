@@ -38,6 +38,8 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.s
 import reactor.core.publisher.Mono;
 
 /**
+ * 使用基于 WebClient 实现的 HttpClient 请求后端 Http 服务
+ * 前缀( Scheme ) : http:// 或 https://
  * @author Spencer Gibb
  */
 public class WebClientHttpRoutingFilter implements GlobalFilter, Ordered {

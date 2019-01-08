@@ -30,6 +30,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.s
 import static org.springframework.util.StringUtils.commaDelimitedListToStringArray;
 
 /**
+ * Websocket URI转发处理,前缀( Scheme ) : ws:// 或者 wss://
  * @author Spencer Gibb
  */
 public class WebsocketRoutingFilter implements GlobalFilter, Ordered {
@@ -79,6 +80,7 @@ public class WebsocketRoutingFilter implements GlobalFilter, Ordered {
 					.collect(Collectors.toList());
 		}
 
+		// 处理连接请求
 		return this.webSocketService.handleRequest(exchange,
 				new ProxyWebSocketHandler(requestUrl, this.webSocketClient,
 						filtered, protocols));

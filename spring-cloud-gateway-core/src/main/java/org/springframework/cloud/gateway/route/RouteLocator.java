@@ -20,7 +20,7 @@ package org.springframework.cloud.gateway.route;
 import reactor.core.publisher.Flux;
 
 /**
- * 获取 Route
+ * Route加载器
  * @author Spencer Gibb
  */
 //TODO: rename to Routes?
